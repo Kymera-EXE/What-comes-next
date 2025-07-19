@@ -2,42 +2,26 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Terminal 00 – Portal Escuro</title>
+  <title>Portal – Flashlight Effect</title>
   <style>
     /* RESET & SETUP */
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      min-height: 9000px;           /* altura suficiente para scroll */
-      background: #000;             /* fundo preto total */
+      background: #000;
       font-family: monospace;
       overflow-x: hidden;
-      cursor: default;              /* cursor sempre visível */
+      cursor: default;
+      min-height: 9000px; /* altura para scroll */
     }
 
-    /* FUNDO + GIF */
+    /* FUNDO ANIMADO */
     .background {
       position: fixed; inset: 0;
-      background: 
-        #000 url('we-can-see-you.gif') center top repeat-y;
+      background: #000 url('we-can-see-you.gif') center top repeat-y;
       background-size: auto;
-      opacity: 0.02;                /* quase invisível fora da luz */
+      opacity: 0.02;
       pointer-events: none;
       z-index: 0;
-    }
-
-    /* MÁSCARA “FLASHLIGHT” */
-    .mask {
-      position: fixed; inset: 0;
-      pointer-events: none;
-      z-index: 50;                  /* acima de tudo, menos do fade */
-      background:
-        radial-gradient(
-          circle at var(--x,50%) var(--y,50%),
-          transparent 150px,
-          rgba(0,0,0,0.97) 150px
-        );
     }
 
     /* TEXTOS MISTERIOSOS */
@@ -47,25 +31,42 @@
       font-size: 14px;
       color: #6a0dad;
       opacity: 0.05;
-      transition: opacity .3s;
-      z-index: 10;
+      transition: opacity 0.3s;
       pointer-events: none;
+      z-index: 1;
     }
 
-    /* PORTAL SCROLLÁVEL */
+    /* PORTAL NO FLUXO NORMAL */
     #portal {
-      position: absolute;           /* NÃO fixed! */
-      bottom: 150px;                /* 150px acima do fim do body */
-      left: 50%;
-      transform: translateX(-50%);
+      display: block;
+      margin: 0 auto;
+      margin-top: 200px;
       width: 180px;
       cursor: pointer;
-      z-index: 10;                  /* abaixo da máscara */
       animation: pulse 2s infinite ease-in-out;
+      opacity: 0.05; /* portal escuro até ser iluminado */
+      transition: opacity 0.3s;
+      z-index: 1;
     }
     @keyframes pulse {
-      0%,100% { transform: translateX(-50%) scale(1); }
-      50%     { transform: translateX(-50%) scale(1.05); }
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.05); }
+    }
+
+    /* MÁSCARA FLASHLIGHT */
+    .mask {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      /* tudo escuro, exceto círculo transparente no cursor */
+      background:
+        radial-gradient(
+          circle at var(--x,50%) var(--y,50%),
+          transparent 0px,
+          transparent 150px,
+          rgba(0,0,0,0.98) 150px,
+          rgba(0,0,0,0.98) 100%
+        );
     }
 
     /* FADE-OUT ANTES DO REDIRECT */
@@ -78,18 +79,15 @@
       transition: opacity 1s ease;
     }
 
-    /* ÁUDIO (escondido) */
+    /* ÁUDIO */
     audio { display: none; }
   </style>
 </head>
 <body>
-  <!-- 1) Fundo animado bem sutil -->
+  <!-- Fundo animado -->
   <div class="background"></div>
 
-  <!-- 2) Máscara que escurece tudo, exceto um disco transparente -->
-  <div class="mask"></div>
-
-  <!-- 3) Frases espalhadas ao longo do scroll -->
+  <!-- Frases misteriosas -->
   <div class="whisper" style="top:  800px; left: 20%;">você vai sair, e vai voltar</div>
   <div class="whisper" style="top: 1500px; left: 60%;">ele está observando, consumindo tudo.</div>
   <div class="whisper" style="top: 2200px; left: 35%;">essa fome... ela não some</div>
@@ -97,56 +95,67 @@
   <div class="whisper" style="top: 3800px; left: 15%;">você vai voltar.</div>
   <div class="whisper" style="top: 4700px; left: 50%;">eles estão esperando por você.</div>
 
-  <!-- 4) Portal só aparece quando você rolar até o fim e iluminar -->
-  <img id="portal" src="00portal.gif" alt="O Portal" />
+  <!-- Portal -->
+  <img id="portal" src="00portal.gif" alt="O Portal">
 
-  <!-- 5) Áudio ambiente -->
+  <!-- Áudio ambiente -->
   <audio id="ambience" loop>
     <source src="whispers-and-wind.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- 6) Overlay de fade antes do redirect -->
+  <!-- Máscara Flashlight -->
+  <div class="mask"></div>
+
+  <!-- Fade-out overlay -->
   <div id="fadeout"></div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const root   = document.documentElement;
-      const portal = document.getElementById("portal");
-      const audio  = document.getElementById("ambience");
-      const fade   = document.getElementById("fadeout");
-      const texts  = document.querySelectorAll(".whisper");
+      const portal = document.getElementById('portal');
+      const audio  = document.getElementById('ambience');
+      const fade   = document.getElementById('fadeout');
+      const texts  = document.querySelectorAll('.whisper');
 
-      // inicia o som bem baixo
+      // Som inicial baixo
       audio.volume = 0.01;
-      audio.play().catch(()=>{});
+      audio.play().catch(() => {});
 
-      // scroll aumenta o volume
-      window.addEventListener("scroll", () => {
+      // Scroll aumenta volume
+      window.addEventListener('scroll', () => {
         const max = document.body.scrollHeight - window.innerHeight;
         audio.volume = Math.min(1, window.scrollY / max * 1.2);
       });
 
-      // flashlight & revelar textos
-      document.addEventListener("mousemove", e => {
-        root.style.setProperty('--x', `${e.clientX}px`);
-        root.style.setProperty('--y', `${e.clientY}px`);
+      // Flashlight & revelar elementos
+      document.addEventListener('mousemove', e => {
+        root.style.setProperty('--x', e.clientX + 'px');
+        root.style.setProperty('--y', e.clientY + 'px');
 
+        // revela whispers
         texts.forEach(el => {
-          const r = el.getBoundingClientRect();
-          const dist = Math.hypot(
-            e.clientX - (r.left + r.width/2),
-            e.clientY - (r.top  + r.height/2)
-          );
+          const rect = el.getBoundingClientRect();
+          const dx = e.clientX - (rect.left + rect.width/2);
+          const dy = e.clientY - (rect.top + rect.height/2);
+          const dist = Math.hypot(dx, dy);
           el.style.opacity = dist < 150 ? 0.6 : 0.05;
         });
+
+        // revela portal
+        const pr = portal.getBoundingClientRect();
+        const pd = Math.hypot(
+          e.clientX - (pr.left + pr.width/2),
+          e.clientY - (pr.top + pr.height/2)
+        );
+        portal.style.opacity = pd < 150 ? 1 : 0.05;
       });
 
-      // clique no portal: fade e redireciona
-      portal.addEventListener("click", () => {
-        fade.style.pointerEvents = "auto";
+      // Clique no portal → fade e redirect
+      portal.addEventListener('click', () => {
+        fade.style.pointerEvents = 'auto';
         fade.style.opacity = 1;
         setTimeout(() => {
-          window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
+          window.location.href = 'https://kymera-exe.github.io/Watchers-void/171717.html';
         }, 1000);
       });
     });
