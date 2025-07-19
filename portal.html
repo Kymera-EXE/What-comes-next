@@ -20,26 +20,13 @@
       position: relative;
     }
 
-    /* CONTEÚDO */
-    .content {
-      position: relative;
-      z-index: 1;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-      line-height: 1.6;
-    }
-
-    .spacer { height: 120vh; }
-
     /* OVERLAY + LANTERNA */
     .overlay {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
       pointer-events: none;
       z-index: 2;
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(0, 0, 0, 0.99);
       mask-image: radial-gradient(
         circle 120px at var(--mx,50%) var(--my,50%),
         transparent 0%, black 70%
@@ -50,10 +37,33 @@
       );
     }
 
-    /* PORTAL */
+    /* ÁUDIO fica por baixo de tudo */
+    audio { display: none; }
+
+    /* FRASES MACABRAS */
+    .phrase {
+      color: transparent;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .phrase:hover {
+      color: #eee;
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      line-height: 1.6;
+    }
+
+    /* PORTAL NO FINAL */
     .portal-container {
       text-align: center;
-      margin: 4rem 0;
+      margin: 6rem 0;
     }
     #portal-img {
       width: 200px;
@@ -70,19 +80,37 @@
   <!-- Overlay da lanterna -->
   <div class="overlay"></div>
 
-  <!-- Conteúdo rolável -->
+  <!-- Conteúdo rolável com frases espalhadas -->
   <div class="content">
-    <h1>Você sente o frio correndo pela espinha</h1>
-    <p>“Algo observa… algo espera…”</p>
-    <p>“Cada suspiro ecoa na escuridão eterna.”</p>
-    <p>“Não há retorno além deste ponto.”</p>
-    <!-- MAIS frases macabras aqui -->
-
-    <div class="spacer"></div>
+    <p class="phrase" style="margin-top:50vh; font-size:2rem; transform:rotate(-15deg)">
+      “Eles cochicham seu nome na escuridão.”
+    </p>
+    <p class="phrase" style="margin-top:60vh; font-size:3rem; transform:rotate(10deg)">
+      “Seus olhos nunca piscam, apenas o fitam.”
+    </p>
+    <p class="phrase" style="margin-top:55vh; font-size:1.5rem; transform:rotate(25deg)">
+      “A noite inteira é apenas o seu funeral.”
+    </p>
+    <p class="phrase" style="margin-top:65vh; font-size:2.5rem; transform:rotate(-30deg)">
+      “Não há eco para quem já não existe.”
+    </p>
+    <p class="phrase" style="margin-top:70vh; font-size:3.5rem; transform:rotate(5deg)">
+      “O vazio devora o que resta de você.”
+    </p>
+    <p class="phrase" style="margin-top:60vh; font-size:1.8rem; transform:rotate(-20deg)">
+      “A lua sangra sonhos eternos.”
+    </p>
+    <p class="phrase" style="margin-top:75vh; font-size:2.2rem; transform:rotate(30deg)">
+      “As sombras se alegram com sua queda.”
+    </p>
+    <p class="phrase" style="margin-top:80vh; font-size:2.8rem; transform:rotate(-5deg)">
+      “O silêncio grita em seu ouvido.”
+    </p>
 
     <!-- Portal no final -->
     <footer class="portal-container">
-      <a href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank" rel="noopener">
+      <a href="https://kymera-exe.github.io/Watchers-void/171717.html"
+         target="_blank" rel="noopener">
         <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
       </a>
     </footer>
