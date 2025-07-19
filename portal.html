@@ -4,28 +4,30 @@
 <meta charset="UTF-8">
 <title>Portal</title>
 <style>
+/* Corpo totalmente escuro, revelado apenas por spotlight via máscara */
 body {
   margin: 0;
-  background: #000 url('we-can-see-you.gif') repeat-y center top;
-  background-size: cover;
+  background-color: #000;
+  background-image: url('we-can-see-you.gif');
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: auto;
   font-family: monospace;
   color: #fff;
-  height: 6000px; /* Scroll longo */
+  height: 6000px;
   overflow-x: hidden;
   cursor: none;
   position: relative;
-}
 
-#spotlight {
-  position: fixed;
-  pointer-events: none;
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.95) 80%);
-  mix-blend-mode: screen;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
+  /* Spotlight por máscara CSS */
+  --x: 50%;
+  --y: 50%;
+  mask-image: radial-gradient(circle at var(--x) var(--y), rgba(255,255,255,0.8) 120px, rgba(0,0,0,0.98) 220px);
+  -webkit-mask-image: radial-gradient(circle at var(--x) var(--y), rgba(255,255,255,0.8) 120px, rgba(0,0,0,0.98) 220px);
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
 }
 
 #portal {
@@ -46,6 +48,7 @@ body {
   100% { transform: translateX(-50%) scale(1); }
 }
 
+/* Sussurros com leve animação flutuante */
 .whisper {
   position: absolute;
   max-width: 300px;
@@ -53,23 +56,42 @@ body {
   opacity: 0.05;
   font-size: 14px;
   transition: opacity 0.4s;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 
 audio {
   display: none;
 }
+
+/* Tela preta de transição */
+#fadeout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s;
+  z-index: 9999;
+}
 </style>
 </head>
 <body>
 
-<div id="spotlight"></div>
 <img id="portal" src="00portal.gif" alt="O Portal" />
 
 <audio id="ambience" loop>
   <source src="whispers-and-wind.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Fragmentos de mensagem (visíveis só com luz) -->
+<!-- Sussurros escondidos -->
 <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
 <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
 <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
@@ -77,37 +99,21 @@ audio {
 <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
 <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
 
+<!-- Tela preta para transição -->
+<div id="fadeout"></div>
+
 <script>
-const spotlight = document.getElementById("spotlight");
 const portal = document.getElementById("portal");
 const audio = document.getElementById("ambience");
 const whispers = document.querySelectorAll(".whisper");
+const fadeout = document.getElementById("fadeout");
 
-// Atualiza posição da luz do cursor
+// Atualiza posição do spotlight
 document.addEventListener("mousemove", e => {
-  spotlight.style.left = `${e.clientX}px`;
-  spotlight.style.top = `${e.clientY}px`;
-});
+  document.body.style.setProperty('--x', `${e.clientX}px`);
+  document.body.style.setProperty('--y', `${e.clientY}px`);
 
-// Começa a tocar o áudio ambiente com volume baixo
-audio.volume = 0.01;
-audio.play().catch(() => {});
-
-// Volume cresce com a rolagem
-window.addEventListener("scroll", () => {
-  const maxScroll = document.body.scrollHeight - window.innerHeight;
-  const scroll = window.scrollY;
-  const proximity = scroll / maxScroll;
-  audio.volume = Math.min(1, proximity * 1.4);
-});
-
-// Clique no portal leva para o 171717.html V2
-  portal.addEventListener("click", () => {
-  window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
-});
-  
-// Revela sussurros quando dentro do spotlight
-document.addEventListener("mousemove", e => {
+  // Revelar sussurros próximos
   whispers.forEach(el => {
     const rect = el.getBoundingClientRect();
     const dx = e.clientX - (rect.left + rect.width / 2);
@@ -119,6 +125,27 @@ document.addEventListener("mousemove", e => {
       el.style.opacity = 0.05;
     }
   });
+});
+
+// Toca o áudio ambiente com volume inicial baixo
+audio.volume = 0.01;
+audio.play().catch(() => {});
+
+// Aumenta o volume com a rolagem
+window.addEventListener("scroll", () => {
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const scroll = window.scrollY;
+  const proximity = scroll / maxScroll;
+  audio.volume = Math.min(1, proximity * 1.2);
+});
+
+// Clique no portal: fade escuro e redirecionamento
+portal.addEventListener("click", () => {
+  fadeout.style.pointerEvents = "auto";
+  fadeout.style.opacity = 1;
+  setTimeout(() => {
+    window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
+  }, 1200);
 });
 </script>
 </body>
