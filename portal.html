@@ -4,70 +4,74 @@
   <meta charset="UTF-8">
   <title>Portal</title>
   <style>
+    /* ---------- CONFIGURAÇÕES GERAIS ---------- */
     html, body {
       margin: 0;
       padding: 0;
-      height: 6000px;
+      height: 6000px; /* Scroll longo */
       overflow-x: hidden;
       font-family: monospace;
       background-color: black;
       color: white;
       cursor: none;
 
-      /* Posição padrão para spotlight */
+      /* Posições iniciais do spotlight */
       --x: 50%;
       --y: 50%;
     }
 
-    /* Máscara escura com facho de luz no cursor */
-    .mask-layer {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1000;
-      background: radial-gradient(circle 120px at var(--x) var(--y), rgba(0, 0, 0, 0) 0%, rgba(0,0,0,1) 200px);
-      mix-blend-mode: multiply;
-    }
-
-    /* Fundo com GIF sutil e repetido */
+    /* ---------- FUNDO ESCURO COM GIF REPETIDO ---------- */
     .background-layer {
-      position: fixed;
-      top: 0; left: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 100%;
+      height: 6000px; /* Mesmo que o body */
       background-image: url('we-can-see-you.gif');
       background-repeat: repeat-y;
       background-position: center top;
       background-size: auto;
-      opacity: 0.04;
+      opacity: 0.04; /* Super sutil */
       z-index: 0;
       pointer-events: none;
     }
 
+    /* ---------- MÁSCARA ESCURA COM FURO DE LUZ ---------- */
+    .mask-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      background: radial-gradient(circle 130px at var(--x) var(--y), rgba(0, 0, 0, 0) 0%, rgba(0,0,0,1) 200px);
+      mix-blend-mode: multiply;
+    }
+
+    /* ---------- PORTAL NO FINAL DA PÁGINA ---------- */
     #portal {
       position: absolute;
       bottom: 150px;
       left: 50%;
       transform: translateX(-50%);
       width: 180px;
-      height: auto;
       cursor: pointer;
       animation: pulse 2s infinite ease-in-out;
       z-index: 10;
     }
 
     @keyframes pulse {
-      0% { transform: translateX(-50%) scale(1); }
-      50% { transform: translateX(-50%) scale(1.05); }
+      0%   { transform: translateX(-50%) scale(1); }
+      50%  { transform: translateX(-50%) scale(1.05); }
       100% { transform: translateX(-50%) scale(1); }
     }
 
+    /* ---------- FRASES MISTERIOSAS ---------- */
     .whisper {
       position: absolute;
       max-width: 300px;
-      color: #33ffff;
+      color: #6a0dad; /* Roxo escuro */
       opacity: 0.05;
       font-size: 14px;
       transition: opacity 0.4s;
@@ -77,16 +81,14 @@
 
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+      50%      { transform: translateY(-5px); }
     }
 
-    audio {
-      display: none;
-    }
-
+    /* ---------- TRANSIÇÃO AO CLICAR NO PORTAL ---------- */
     #fadeout {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       background: black;
@@ -95,20 +97,21 @@
       z-index: 9999;
       transition: opacity 1s ease;
     }
+
+    audio {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Fundo que se move com o scroll -->
   <div class="background-layer"></div>
+
+  <!-- Camada de escuridão com buraco de luz -->
   <div class="mask-layer"></div>
 
-  <img id="portal" src="00portal.gif" alt="O Portal" />
-
-  <audio id="ambience" loop>
-    <source src="whispers-and-wind.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Frases misteriosas -->
+  <!-- Frases secretas no caminho -->
   <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
   <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
   <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
@@ -116,39 +119,52 @@
   <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
   <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
 
+  <!-- Portal no final da jornada -->
+  <img id="portal" src="00portal.gif" alt="O Portal" />
+
+  <!-- Som ambiente -->
+  <audio id="ambience" loop>
+    <source src="whispers-and-wind.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Tela preta para transição -->
   <div id="fadeout"></div>
 
+  <!-- ---------- SCRIPT PRINCIPAL ---------- -->
   <script>
     const portal = document.getElementById("portal");
     const audio = document.getElementById("ambience");
     const fadeout = document.getElementById("fadeout");
     const whispers = document.querySelectorAll(".whisper");
 
-    // Atualiza a posição do facho de luz
-    document.addEventListener("mousemove", e => {
-      document.documentElement.style.setProperty('--x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--y', `${e.clientY}px`);
+    // Atualiza posição da luz com o cursor
+    document.addEventListener("mousemove", (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      document.documentElement.style.setProperty('--x', `${x}px`);
+      document.documentElement.style.setProperty('--y', `${y}px`);
 
-      whispers.forEach(el => {
+      // Revela frases sob a luz
+      whispers.forEach((el) => {
         const rect = el.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
+        const dx = x - (rect.left + rect.width / 2);
+        const dy = y - (rect.top + rect.height / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         el.style.opacity = dist < 150 ? 0.6 : 0.05;
       });
     });
 
-    // Volume do áudio sobe com a rolagem
+    // Aumenta o volume do som conforme o scroll
     audio.volume = 0.01;
     audio.play().catch(() => {});
     window.addEventListener("scroll", () => {
       const maxScroll = document.body.scrollHeight - window.innerHeight;
       const scroll = window.scrollY;
       const progress = scroll / maxScroll;
-      audio.volume = Math.min(1, progress * 1.3);
+      audio.volume = Math.min(1, progress * 1.2);
     });
 
-    // Clique no portal com fade
+    // Transição escura ao clicar no portal
     portal.addEventListener("click", () => {
       fadeout.style.pointerEvents = "auto";
       fadeout.style.opacity = 1;
