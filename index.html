@@ -1,144 +1,151 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>What Comes Next</title>
+  <meta charset="UTF-8" />
+  <title>Portal</title>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
+      height: 6000px;
+      overflow-x: hidden;
       background-color: #000;
-      color: #fff;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 16px;
-      padding: 20px;
-      overflow: hidden;
+      font-family: monospace;
+      cursor: none;
     }
 
-    #chat-container {
-      height: 90vh;
-      overflow-y: auto;
-      padding-right: 10px;
-      scrollbar-width: none; /* Firefox */
-    }
-
-    #chat-container::-webkit-scrollbar {
-      display: none; /* Chrome */
-    }
-
-    .mensagem {
-      margin-bottom: 20px;
-      white-space: pre-wrap;
-    }
-
-    .amarelo {
-      color: #ffff66;
-      text-align: left;
-    }
-
-    .azul {
-      color: #003366;
-      text-align: right;
-    }
-
-    .typing {
+    body::before {
+      content: "";
       position: fixed;
-      bottom: 10px;
+      inset: 0;
+      background: radial-gradient(circle 130px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(0, 0, 0, 0.97) 100%);
+      pointer-events: none;
+      z-index: 10000;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url('we-can-see-you.gif');
+      background-repeat: repeat-y;
+      background-position: center top;
+      background-size: auto;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #portal {
+      position: absolute;
+      bottom: 150px;
       left: 50%;
       transform: translateX(-50%);
-      color: #444;
-      font-style: italic;
+      width: 180px;
+      height: auto;
+      cursor: pointer;
+      animation: pulse 2s infinite ease-in-out;
+      z-index: 10;
+    }
+
+    @keyframes pulse {
+      0% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+      100% { transform: translateX(-50%) scale(1); }
+    }
+
+    .whisper {
+      position: absolute;
+      max-width: 300px;
+      color: #33ffff;
+      opacity: 0.05;
       font-size: 14px;
-      display: flex;
-      gap: 4px;
+      transition: opacity 0.3s;
+      animation: float 6s ease-in-out infinite;
+      z-index: 5;
     }
 
-    .dot {
-      animation: blink 1s infinite;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
-    .dot:nth-child(2) {
-      animation-delay: 0.2s;
+    audio {
+      display: none;
     }
 
-    .dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes blink {
-      0%, 20% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    a {
-      color: #003366;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
+    #fadeout {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s;
+      z-index: 9999;
     }
   </style>
 </head>
 <body>
 
-  <div id="chat-container">
-    <div class="mensagem amarelo" id="msg1">
-      "Apenas aceitar? como podemos aceitar esse tipo de sofrimento? nós não deveríamos estar aqui, NINGUÉM deveria estar aqui. Mas eu temo o que vem a seguir..."
-    </div>
+  <img id="portal" src="00portal.gif" alt="O Portal" />
 
-    <div class="mensagem azul" id="msg2">
-      "Você deveria parar de pensar demais. Pega isso aqui: https://kymera-exe.github.io/Watchers-void/171717.html"
-    </div>
+  <audio id="ambience" loop>
+    <source src="whispers-and-wind.mp3" type="audio/mpeg" />
+  </audio>
 
-    <div class="mensagem amarelo" id="msg3">
-      "12 vezes. Ele disse que deve ser 12 vezes..."
-    </div>
-  </div>
+  <!-- Mensagens ocultas -->
+  <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
+  <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
+  <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
+  <div class="whisper" style="top:3100px; left:70%;">não importa mais...</div>
+  <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
+  <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
 
-  <div class="typing" id="typing">
-    <span>Digitando</span>
-    <span class="dot">.</span>
-    <span class="dot">.</span>
-    <span class="dot">.</span>
-  </div>
+  <div id="fadeout"></div>
 
   <script>
-    const messages = [
-      { id: "msg1", delay: 2000 },
-      { id: "msg2", delay: 4000 },
-      { id: "msg3", delay: 4000 }
-    ];
+    const audio = document.getElementById("ambience");
+    const portal = document.getElementById("portal");
+    const whispers = document.querySelectorAll(".whisper");
+    const fadeout = document.getElementById("fadeout");
 
-    let current = 0;
+    // Movimento da luz (spotlight)
+    document.addEventListener("mousemove", e => {
+      document.body.style.setProperty('--x', `${e.clientX}px`);
+      document.body.style.setProperty('--y', `${e.clientY}px`);
 
-    // Esconde todas as mensagens no começo
-    messages.forEach(m => {
-      document.getElementById(m.id).style.display = 'none';
+      // Revela sussurros próximos
+      whispers.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        el.style.opacity = dist < 150 ? 0.6 : 0.05;
+      });
     });
 
-    function showNextMessage() {
-      if (current >= messages.length) {
-        document.getElementById("typing").style.display = "none";
-        return;
-      }
+    // Áudio ambiente suave
+    audio.volume = 0.01;
+    audio.play().catch(() => {});
 
-      const { id, delay } = messages[current];
+    window.addEventListener("scroll", () => {
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      const scroll = window.scrollY;
+      const proximity = scroll / maxScroll;
+      audio.volume = Math.min(1, proximity * 1.2);
+    });
+
+    // Portal com fadeout
+    portal.addEventListener("click", () => {
+      fadeout.style.pointerEvents = "auto";
+      fadeout.style.opacity = 1;
       setTimeout(() => {
-        const el = document.getElementById(id);
-        el.style.display = "block";
-        current++;
-        showNextMessage();
-      }, delay);
-    }
-
-    showNextMessage();
+        window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
+      }, 1000);
+    });
   </script>
-
 </body>
 </html>
