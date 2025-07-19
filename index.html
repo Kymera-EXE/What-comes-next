@@ -8,39 +8,80 @@
       background-color: #000;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
-      padding: 40px;
+      padding: 20px;
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    #chat-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 60px;
     }
 
     .mensagem {
-      display: none;
-      margin-bottom: 20px;
-      padding: 10px 20px;
-      border-left: 4px solid;
+      max-width: 70%;
+      padding: 12px 18px;
+      border-radius: 12px;
+      position: relative;
       opacity: 0;
+      display: none;
       transition: opacity 1s ease;
+      word-wrap: break-word;
     }
 
     .amarelo {
+      background-color: #1a1a00;
       color: #ffff66;
-      border-color: #ffff66;
+      align-self: flex-start;
     }
 
     .azul-escuro {
+      background-color: #e6f0ff;
       color: #003366;
-      border-color: #003366;
+      align-self: flex-end;
     }
 
-    a {
-      color: #003366;
-      text-decoration: underline;
+    .amarelo::before,
+    .azul-escuro::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      top: 10px;
+      border: 8px solid transparent;
+    }
+
+    .amarelo::before {
+      left: -16px;
+      border-right-color: #1a1a00;
+    }
+
+    .azul-escuro::before {
+      right: -16px;
+      border-left-color: #e6f0ff;
     }
 
     .typing {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       color: #555;
       font-style: italic;
-      margin-bottom: 10px;
       display: flex;
       gap: 4px;
+      font-size: 14px;
+      background: #111;
+      padding: 6px 12px;
+      border-radius: 8px;
     }
 
     .dot {
@@ -56,19 +97,36 @@
     }
 
     @keyframes blink {
-      0%, 20% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
+      0%, 20% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    a {
+      color: #003366;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
+
+  <div id="chat-container">
+    <div class="mensagem amarelo" id="msg1">
+      <p>"Apenas aceitar? como podemos aceitar esse tipo de sofrimento? nós não deveríamos estar aqui, NINGUÉM deveria estar aqui. Mas eu temo o que vem a seguir..."</p>
+    </div>
+
+    <div class="mensagem azul-escuro" id="msg2">
+      <p>"Você deveria parar de pensar demais. Pega isso aqui: 
+        <a href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
+          https://kymera-exe.github.io/Watchers-void/171717.html
+        </a>"
+      </p>
+    </div>
+
+    <div class="mensagem amarelo" id="msg3">
+      <p>"12 vezes. Ele disse que deve ser 12 vezes..."</p>
+    </div>
+  </div>
 
   <div class="typing" id="typing">
     <span>Digitando</span>
@@ -77,27 +135,11 @@
     <span class="dot">.</span>
   </div>
 
-  <div class="mensagem amarelo" id="msg1">
-    <p>"Apenas aceitar? como podemos aceitar esse tipo de sofrimento? nós não deveríamos estar aqui, NINGUÉM deveria estar aqui. Mas eu temo o que vem a seguir..."</p>
-  </div>
-
-  <div class="mensagem azul-escuro" id="msg2">
-    <p>"Você deveria parar de pensar demais. Pega isso aqui: 
-      <a href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
-        https://kymera-exe.github.io/Watchers-void/171717.html
-      </a>"
-    </p>
-  </div>
-
-  <div class="mensagem amarelo" id="msg3">
-    <p>"12 vezes. Ele disse que deve ser 12 vezes..."</p>
-  </div>
-
   <script>
     const messages = [
       { id: "msg1", delay: 2000 },
       { id: "msg2", delay: 4000 },
-      { id: "msg3", delay: 6000 }
+      { id: "msg3", delay: 4000 }
     ];
 
     let current = 0;
