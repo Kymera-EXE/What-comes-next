@@ -21,7 +21,7 @@
       width: 100vw; height: 100vh;
       background: url('we-can-see-you.gif') repeat center center;
       background-size: auto;
-      filter: brightness(20%);
+      filter: brightness(10%);
       z-index: 0;
     }
 
@@ -45,49 +45,48 @@
     /* ÁUDIO escondido */
     audio { display: none; }
 
-    /* ANIMAÇÃO DE GLITCH */
+    /* GLITCH SUTIL */
     @keyframes glitch {
-      0%   { text-shadow: 2px 0 #550055, -2px 0 #bb00bb; }
-      25%  { text-shadow: -2px 0 #550055, 2px 0 #bb00bb; }
-      50%  { text-shadow: 2px 0 #550055, -2px 0 #bb00bb; }
-      75%  { text-shadow: -2px 0 #550055, 2px 0 #bb00bb; }
-      100% { text-shadow: 2px 0 #550055, -2px 0 #bb00bb; }
+      0%,100% { text-shadow: 1px 0 #660066, -1px 0 #cc00cc; }
+      50%    { text-shadow:-1px 0 #660066,  1px 0 #cc00cc; }
     }
 
     /* FRASES MACABRAS */
     .phrase {
       position: absolute;
-      color: transparent;
+      color: #550055;
+      opacity: 0;
       font-size: 0.9rem;
-      transition: color 0.2s ease;
+      transition: opacity 0.6s ease;
       pointer-events: auto;
+      white-space: nowrap;
     }
     .phrase:hover {
-      color: #550055;
-      animation: glitch 0.8s infinite;
+      opacity: 1;
+      animation: glitch 1.5s infinite;
     }
 
-    /* POSICIONAMENTO E ESTILO DAS FRASES */
-    #p1 { top: 5vh;   left: 10%; }
-    #p2 { top: 80vh;  left: 70%; }
-    #p3 { top: 160vh; left: 25%; }
-    #p4 { top: 240vh; left: 65%; }
-    #p5 { top: 320vh; left: 15%; }
-    #p6 { top: 400vh; left: 75%; }
-    #p7 { top: 480vh; left: 30%; }
-    #p8 { top: 560vh; left: 80%; }
+    /* POSICIONAMENTO MAIS CENTRAL */
+    #p1 { top: 10vh;  left: 40%; }
+    #p2 { top: 90vh;  left: 55%; }
+    #p3 { top: 170vh; left: 45%; }
+    #p4 { top: 250vh; left: 60%; }
+    #p5 { top: 330vh; left: 50%; }
+    #p6 { top: 410vh; left: 55%; }
+    #p7 { top: 490vh; left: 45%; }
+    #p8 { top: 570vh; left: 60%; }
 
     /* ÁREA PARA SCROLL */
     .content {
       position: relative;
       z-index: 1;
-      height: 620vh; /* bem longo para scroll */
+      height: 660vh; /* ainda mais longo */
     }
 
     /* PORTAL NO FINAL */
     .portal-container {
       position: absolute;
-      top: 600vh;
+      top: 640vh;
       width: 100%;
       text-align: center;
       z-index: 1;
