@@ -1,151 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Portal</title>
+  <meta charset="UTF-8">
+  <title>Vigilância do Abismo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      height: 6000px;
-      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    body {
       background-color: #000;
-      font-family: monospace;
-      cursor: none;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle 130px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(0, 0, 0, 0.97) 100%);
-      pointer-events: none;
-      z-index: 10000;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
       background-image: url('we-can-see-you.gif');
-      background-repeat: repeat-y;
-      background-position: center top;
+      background-repeat: repeat;
       background-size: auto;
-      opacity: 0.06;
-      pointer-events: none;
-      z-index: 0;
+      filter: brightness(10%);
+      font-family: monospace, sans-serif;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    #portal {
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 5vh 2rem;
+      height: 700vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+    }
+
+    .box {
+      background: #000;
+      padding: 1rem 2rem;
+      margin: 8vh 0;
+      max-width: 80%;
+      color: white;
+      border: 1px solid #111;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .portal-container {
       position: absolute;
-      bottom: 150px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 5vh;
+      width: 100%;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .portal-link {
+      display: inline-block;
+      background: #000;
+      color: white;
+      padding: 1rem 2rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid #333;
+    }
+
+    #portal-img {
       width: 180px;
-      height: auto;
-      cursor: pointer;
-      animation: pulse 2s infinite ease-in-out;
-      z-index: 10;
-    }
-
-    @keyframes pulse {
-      0% { transform: translateX(-50%) scale(1); }
-      50% { transform: translateX(-50%) scale(1.05); }
-      100% { transform: translateX(-50%) scale(1); }
-    }
-
-    .whisper {
-      position: absolute;
-      max-width: 300px;
-      color: #33ffff;
-      opacity: 0.05;
-      font-size: 14px;
-      transition: opacity 0.3s;
-      animation: float 6s ease-in-out infinite;
-      z-index: 5;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    audio {
-      display: none;
-    }
-
-    #fadeout {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: black;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 1s;
-      z-index: 9999;
+      display: block;
+      margin: 1rem auto 0;
     }
   </style>
 </head>
 <body>
 
-  <img id="portal" src="00portal.gif" alt="O Portal" />
+  <div class="container">
+    <div class="box">Eles cochicham seu nome na escuridão</div>
+    <div class="box">Seus olhos nunca piscam, apenas o fitam</div>
+    <div class="box">A noite inteira é apenas seu funeral</div>
+    <div class="box">Não há eco para quem já não existe</div>
+    <div class="box">O vazio devora o que resta de você</div>
+    <div class="box">A lua sangra sonhos eternos</div>
+    <div class="box">As sombras se alegram com sua queda</div>
+    <div class="box">O silêncio grita em seu ouvido</div>
+  </div>
 
-  <audio id="ambience" loop>
-    <source src="whispers-and-wind.mp3" type="audio/mpeg" />
-  </audio>
+  <!-- Portal -->
+  <div class="portal-container">
+    <a class="portal-link" href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
+      Olhos, Significam destino.
+    </a>
+    <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
+  </div>
 
-  <!-- Mensagens ocultas -->
-  <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
-  <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
-  <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
-  <div class="whisper" style="top:3100px; left:70%;">não importa mais...</div>
-  <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
-  <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
-
-  <div id="fadeout"></div>
-
-  <script>
-    const audio = document.getElementById("ambience");
-    const portal = document.getElementById("portal");
-    const whispers = document.querySelectorAll(".whisper");
-    const fadeout = document.getElementById("fadeout");
-
-    // Movimento da luz (spotlight)
-    document.addEventListener("mousemove", e => {
-      document.body.style.setProperty('--x', `${e.clientX}px`);
-      document.body.style.setProperty('--y', `${e.clientY}px`);
-
-      // Revela sussurros próximos
-      whispers.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        el.style.opacity = dist < 150 ? 0.6 : 0.05;
-      });
-    });
-
-    // Áudio ambiente suave
-    audio.volume = 0.01;
-    audio.play().catch(() => {});
-
-    window.addEventListener("scroll", () => {
-      const maxScroll = document.body.scrollHeight - window.innerHeight;
-      const scroll = window.scrollY;
-      const proximity = scroll / maxScroll;
-      audio.volume = Math.min(1, proximity * 1.2);
-    });
-
-    // Portal com fadeout
-    portal.addEventListener("click", () => {
-      fadeout.style.pointerEvents = "auto";
-      fadeout.style.opacity = 1;
-      setTimeout(() => {
-        window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
-      }, 1000);
-    });
-  </script>
 </body>
 </html>
