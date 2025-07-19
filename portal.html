@@ -11,15 +11,16 @@
       font-family: monospace;
       overflow-x: hidden;
       cursor: default;
-      min-height: 9000px; /* altura para scroll */
+      /* altura é dada pelo conteúdo: whispers + portal */
     }
 
     /* FUNDO ANIMADO */
     .background {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: #000 url('we-can-see-you.gif') center top repeat-y;
       background-size: auto;
-      opacity: 0.02;
+      opacity: 0.02;       /* quase imperceptível fora da luz */
       pointer-events: none;
       z-index: 0;
     }
@@ -30,7 +31,7 @@
       max-width: 300px;
       font-size: 14px;
       color: #6a0dad;
-      opacity: 0.05;
+      opacity: 0.05;       /* invisível até iluminado */
       transition: opacity 0.3s;
       pointer-events: none;
       z-index: 1;
@@ -39,12 +40,11 @@
     /* PORTAL NO FLUXO NORMAL */
     #portal {
       display: block;
-      margin: 0 auto;
-      margin-top: 200px;
+      margin: 200px auto 100px; /* topo espaçado, depois vem fade e etc */
       width: 180px;
       cursor: pointer;
       animation: pulse 2s infinite ease-in-out;
-      opacity: 0.05; /* portal escuro até ser iluminado */
+      opacity: 0.05;        /* quase invisível até iluminado */
       transition: opacity 0.3s;
       z-index: 1;
     }
@@ -53,25 +53,24 @@
       50%     { transform: scale(1.05); }
     }
 
-    /* MÁSCARA FLASHLIGHT */
+    /* MÁSCARA FLASHLIGHT via clip-path */
+    :root {
+      --x: 50%;
+      --y: 50%;
+    }
     .mask {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.98);
       pointer-events: none;
       z-index: 10;
-      /* tudo escuro, exceto círculo transparente no cursor */
-      background:
-        radial-gradient(
-          circle at var(--x,50%) var(--y,50%),
-          transparent 0px,
-          transparent 150px,
-          rgba(0,0,0,0.98) 150px,
-          rgba(0,0,0,0.98) 100%
-        );
+      clip-path: circle(150px at var(--x) var(--y));
     }
 
     /* FADE-OUT ANTES DO REDIRECT */
     #fadeout {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: #000;
       opacity: 0;
       pointer-events: none;
@@ -95,7 +94,7 @@
   <div class="whisper" style="top: 3800px; left: 15%;">você vai voltar.</div>
   <div class="whisper" style="top: 4700px; left: 50%;">eles estão esperando por você.</div>
 
-  <!-- Portal -->
+  <!-- Portal (agora está no fim do fluxo) -->
   <img id="portal" src="00portal.gif" alt="O Portal">
 
   <!-- Áudio ambiente -->
@@ -121,31 +120,32 @@
       audio.volume = 0.01;
       audio.play().catch(() => {});
 
-      // Scroll aumenta volume
+      // Scroll aumenta volume gradualmente
       window.addEventListener('scroll', () => {
         const max = document.body.scrollHeight - window.innerHeight;
         audio.volume = Math.min(1, window.scrollY / max * 1.2);
       });
 
-      // Flashlight & revelar elementos
+      // Flashlight + revelar portal e whispers
       document.addEventListener('mousemove', e => {
+        // atualiza centro do clip-path
         root.style.setProperty('--x', e.clientX + 'px');
         root.style.setProperty('--y', e.clientY + 'px');
 
-        // revela whispers
+        // revela whispers se dentro de 150px do cursor
         texts.forEach(el => {
           const rect = el.getBoundingClientRect();
           const dx = e.clientX - (rect.left + rect.width/2);
-          const dy = e.clientY - (rect.top + rect.height/2);
+          const dy = e.clientY - (rect.top  + rect.height/2);
           const dist = Math.hypot(dx, dy);
           el.style.opacity = dist < 150 ? 0.6 : 0.05;
         });
 
-        // revela portal
+        // revela portal se dentro de 150px do cursor
         const pr = portal.getBoundingClientRect();
         const pd = Math.hypot(
           e.clientX - (pr.left + pr.width/2),
-          e.clientY - (pr.top + pr.height/2)
+          e.clientY - (pr.top  + pr.height/2)
         );
         portal.style.opacity = pd < 150 ? 1 : 0.05;
       });
