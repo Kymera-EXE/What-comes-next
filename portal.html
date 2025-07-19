@@ -16,45 +16,77 @@
       background-image: url('we-can-see-you.gif');
       background-repeat: repeat;
       background-size: auto;
-      filter: brightness(10%);
+      filter: brightness(8%);
       font-family: monospace, sans-serif;
       color: white;
       min-height: 100vh;
       overflow-x: hidden;
-      position: relative;
     }
 
     .container {
-      position: relative;
-      z-index: 1;
-      padding: 5vh 2rem;
-      height: 700vh;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 5vh 2rem 10rem; /* espaço no final para o portal */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
+      gap: 8vh;
     }
 
     .box {
       background: #000;
       padding: 1rem 2rem;
-      margin: 8vh 0;
-      max-width: 80%;
       color: white;
       border: 1px solid #111;
       font-size: 0.9rem;
       text-align: center;
+      width: 100%;
     }
 
     .portal-container {
-      position: absolute;
-      bottom: 5vh;
-      width: 100%;
       text-align: center;
-      z-index: 2;
+      margin-top: 10vh;
     }
 
     .portal-link {
       display: inline-block;
       background: #000;
-      color:
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid #333;
+      margin-bottom: 1rem;
+    }
+
+    #portal-img {
+      width: 180px;
+      display: block;
+      margin: 1rem auto 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Caixas pretas com frases -->
+    <div class="box">Eles cochicham seu nome na escuridão</div>
+    <div class="box">Seus olhos nunca piscam, apenas o fitam</div>
+    <div class="box">A noite inteira é apenas seu funeral</div>
+    <div class="box">Não há eco para quem já não existe</div>
+    <div class="box">O vazio devora o que resta de você</div>
+    <div class="box">A lua sangra sonhos eternos</div>
+    <div class="box">As sombras se alegram com sua queda</div>
+    <div class="box">O silêncio grita em seu ouvido</div>
+
+    <!-- Portal ao final -->
+    <div class="portal-container">
+      <a class="portal-link" href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
+        Olhos, Significam destino.
+      </a>
+      <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
+    </div>
+  </div>
+
+</body>
+</html>
