@@ -5,47 +5,62 @@
   <title>Vigilância do Abismo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      overflow-x: hidden;
+      height: 100%;
+      font-family: monospace;
+      background: black;
     }
 
     body {
-      background-color: #000;
       background-image: url('we-can-see-you.gif');
       background-repeat: repeat;
       background-size: auto;
-      filter: brightness(8%);
-      font-family: monospace, sans-serif;
       color: white;
-      min-height: 100vh;
-      overflow-x: hidden;
+      filter: brightness(6%);
+    }
+
+    #lanterna {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle 100px at center, transparent 0%, black 100%);
+      mix-blend-mode: multiply;
+      z-index: 10;
     }
 
     .container {
+      position: relative;
+      z-index: 5;
+      width: 100%;
       max-width: 800px;
       margin: 0 auto;
-      padding: 5vh 2rem 10rem; /* espaço no final para o portal */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8vh;
+      padding-top: 200px;
+      padding-bottom: 5000px; /* Faz a página longa */
     }
 
     .box {
       background: #000;
-      padding: 1rem 2rem;
       color: white;
+      padding: 1.5rem 2rem;
       border: 1px solid #111;
-      font-size: 0.9rem;
+      font-size: 1rem;
       text-align: center;
-      width: 100%;
+      margin: 250px auto;
+      max-width: 80%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      position: relative;
     }
 
     .portal-container {
       text-align: center;
-      margin-top: 10vh;
+      margin-top: 300px;
     }
 
     .portal-link {
@@ -68,8 +83,10 @@
 </head>
 <body>
 
+  <div id="lanterna"></div>
+
   <div class="container">
-    <!-- Caixas pretas com frases -->
+    <!-- Frases espalhadas -->
     <div class="box">Eles cochicham seu nome na escuridão</div>
     <div class="box">Seus olhos nunca piscam, apenas o fitam</div>
     <div class="box">A noite inteira é apenas seu funeral</div>
@@ -79,7 +96,7 @@
     <div class="box">As sombras se alegram com sua queda</div>
     <div class="box">O silêncio grita em seu ouvido</div>
 
-    <!-- Portal ao final -->
+    <!-- Portal -->
     <div class="portal-container">
       <a class="portal-link" href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
         Olhos, Significam destino.
@@ -87,6 +104,43 @@
       <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
     </div>
   </div>
+
+  <!-- Áudio dinâmico -->
+  <audio id="ambiente" src="whispers-and-wind.mp3" loop autoplay></audio>
+
+  <script>
+    // Áudio que aumenta com scroll
+    const audio = document.getElementById("ambiente");
+    audio.volume = 0.01;
+
+    window.addEventListener("scroll", () => {
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      const scrollPercent = window.scrollY / maxScroll;
+      audio.volume = Math.min(0.9, scrollPercent * 1.2);
+    });
+
+    // Lanterna e revelação
+    const lanterna = document.getElementById("lanterna");
+    document.addEventListener("mousemove", (e) => {
+      lanterna.style.background = `radial-gradient(circle 150px at ${e.clientX}px ${e.clientY}px, transparent 0%, black 100%)`;
+
+      // Revelar caixas dentro da área da lanterna
+      document.querySelectorAll(".box").forEach(box => {
+        const rect = box.getBoundingClientRect();
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        const withinX = mouseX > rect.left - 50 && mouseX < rect.right + 50;
+        const withinY = mouseY > rect.top - 50 && mouseY < rect.bottom + 50;
+
+        if (withinX && withinY) {
+          box.style.opacity = "1";
+        } else {
+          box.style.opacity = "0";
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
