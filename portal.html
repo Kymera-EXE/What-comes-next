@@ -8,15 +8,21 @@
     /* RESET */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* FUNDO EM MOSAICO */
+    /* FUNDO EM MOSAICO ESCURO */
     body {
       min-height: 100vh;
-      background-image: url('we-can-see-you.gif');
-      background-repeat: repeat;
-      background-position: center;
-      font-family: sans-serif;
       overflow-x: hidden;
       position: relative;
+      font-family: sans-serif;
+    }
+    body::before {
+      content: '';
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: url('we-can-see-you.gif') repeat center center;
+      background-size: auto;
+      filter: brightness(20%);
+      z-index: 0;
     }
 
     /* OVERLAY + LANTERNA */
@@ -39,41 +45,52 @@
     /* ÁUDIO escondido */
     audio { display: none; }
 
+    /* ANIMAÇÃO DE GLITCH */
+    @keyframes glitch {
+      0%   { text-shadow: 2px 0 #550055, -2px 0 #bb00bb; }
+      25%  { text-shadow: -2px 0 #550055, 2px 0 #bb00bb; }
+      50%  { text-shadow: 2px 0 #550055, -2px 0 #bb00bb; }
+      75%  { text-shadow: -2px 0 #550055, 2px 0 #bb00bb; }
+      100% { text-shadow: 2px 0 #550055, -2px 0 #bb00bb; }
+    }
+
     /* FRASES MACABRAS */
     .phrase {
       position: absolute;
       color: transparent;
+      font-size: 0.9rem;
       transition: color 0.2s ease;
-      pointer-events: auto; /* pra hover funcionar */
+      pointer-events: auto;
     }
     .phrase:hover {
-      color: #000;
+      color: #550055;
+      animation: glitch 0.8s infinite;
     }
 
     /* POSICIONAMENTO E ESTILO DAS FRASES */
-    /* Ajuste top/left e font-size como quiser */
-    #p1 { top: 20px;   left: 10%;  font-size: 1.2rem; transform: rotate(-5deg); }
-    #p2 { top: 40vh;   left: 75%;  font-size: 1rem;  transform: rotate(8deg); }
-    #p3 { top: 80vh;   left: 20%;  font-size: 1.4rem; transform: rotate(-10deg); }
-    #p4 { top: 120vh;  left: 60%;  font-size: 1.1rem; transform: rotate(5deg); }
-    #p5 { top: 160vh;  left: 15%;  font-size: 1.3rem; transform: rotate(-7deg); }
-    #p6 { top: 200vh;  left: 70%;  font-size: 0.9rem; transform: rotate(10deg); }
-    #p7 { top: 240vh;  left: 30%;  font-size: 1.5rem; transform: rotate(-12deg); }
-    #p8 { top: 280vh;  left: 80%;  font-size: 1.2rem; transform: rotate(6deg); }
+    #p1 { top: 5vh;   left: 10%; }
+    #p2 { top: 80vh;  left: 70%; }
+    #p3 { top: 160vh; left: 25%; }
+    #p4 { top: 240vh; left: 65%; }
+    #p5 { top: 320vh; left: 15%; }
+    #p6 { top: 400vh; left: 75%; }
+    #p7 { top: 480vh; left: 30%; }
+    #p8 { top: 560vh; left: 80%; }
 
-    /* CONTEÚDO GERAL (para scroll) */
+    /* ÁREA PARA SCROLL */
     .content {
       position: relative;
       z-index: 1;
-      height: 320vh; /* garante scroll longo */
+      height: 620vh; /* bem longo para scroll */
     }
 
     /* PORTAL NO FINAL */
     .portal-container {
       position: absolute;
-      top: 310vh;
+      top: 600vh;
       width: 100%;
       text-align: center;
+      z-index: 1;
     }
     #portal-img {
       width: 180px;
