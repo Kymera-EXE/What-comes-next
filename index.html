@@ -2,86 +2,59 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Index.html</title>
+  <title>What Comes Next</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       background-color: #000;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
       padding: 20px;
-      margin: 0;
       overflow: hidden;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
     }
 
     #chat-container {
-      flex-grow: 1;
+      height: 90vh;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-bottom: 60px;
+      padding-right: 10px;
+      scrollbar-width: none; /* Firefox */
+    }
+
+    #chat-container::-webkit-scrollbar {
+      display: none; /* Chrome */
     }
 
     .mensagem {
-      max-width: 70%;
-      padding: 12px 18px;
-      border-radius: 12px;
-      position: relative;
-      opacity: 0;
-      display: none;
-      transition: opacity 1s ease;
-      word-wrap: break-word;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
     }
 
     .amarelo {
-      background-color: #1a1a00;
       color: #ffff66;
-      align-self: flex-start;
+      text-align: left;
     }
 
-    .azul-escuro {
-      background-color: #e6f0ff;
+    .azul {
       color: #003366;
-      align-self: flex-end;
-    }
-
-    .amarelo::before,
-    .azul-escuro::before {
-      content: "";
-      position: absolute;
-      width: 0;
-      height: 0;
-      top: 10px;
-      border: 8px solid transparent;
-    }
-
-    .amarelo::before {
-      left: -16px;
-      border-right-color: #1a1a00;
-    }
-
-    .azul-escuro::before {
-      right: -16px;
-      border-left-color: #e6f0ff;
+      text-align: right;
     }
 
     .typing {
       position: fixed;
-      bottom: 20px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      color: #555;
+      color: #444;
       font-style: italic;
+      font-size: 14px;
       display: flex;
       gap: 4px;
-      font-size: 14px;
-      background: #111;
-      padding: 6px 12px;
-      border-radius: 8px;
     }
 
     .dot {
@@ -104,6 +77,10 @@
 
     a {
       color: #003366;
+      text-decoration: none;
+    }
+
+    a:hover {
       text-decoration: underline;
     }
   </style>
@@ -112,19 +89,15 @@
 
   <div id="chat-container">
     <div class="mensagem amarelo" id="msg1">
-      <p>"Apenas aceitar? como podemos aceitar esse tipo de sofrimento? nós não deveríamos estar aqui, NINGUÉM deveria estar aqui. Mas eu temo o que vem a seguir..."</p>
+      "Apenas aceitar? como podemos aceitar esse tipo de sofrimento? nós não deveríamos estar aqui, NINGUÉM deveria estar aqui. Mas eu temo o que vem a seguir..."
     </div>
 
-    <div class="mensagem azul-escuro" id="msg2">
-      <p>"Você deveria parar de pensar demais. Pega isso aqui: 
-        <a href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
-          https://kymera-exe.github.io/Watchers-void/171717.html
-        </a>"
-      </p>
+    <div class="mensagem azul" id="msg2">
+      "Você deveria parar de pensar demais. Pega isso aqui: https://kymera-exe.github.io/Watchers-void/171717.html"
     </div>
 
     <div class="mensagem amarelo" id="msg3">
-      <p>"12 vezes. Ele disse que deve ser 12 vezes..."</p>
+      "12 vezes. Ele disse que deve ser 12 vezes..."
     </div>
   </div>
 
@@ -144,6 +117,11 @@
 
     let current = 0;
 
+    // Esconde todas as mensagens no começo
+    messages.forEach(m => {
+      document.getElementById(m.id).style.display = 'none';
+    });
+
     function showNextMessage() {
       if (current >= messages.length) {
         document.getElementById("typing").style.display = "none";
@@ -154,9 +132,6 @@
       setTimeout(() => {
         const el = document.getElementById(id);
         el.style.display = "block";
-        setTimeout(() => {
-          el.style.opacity = 1;
-        }, 50);
         current++;
         showNextMessage();
       }, delay);
