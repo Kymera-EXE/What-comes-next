@@ -4,62 +4,63 @@
   <meta charset="UTF-8">
   <title>Terminal 00 – Portal Escuro</title>
   <style>
-    /* 1) RESET GERAL */
-    * { margin:0; padding:0; box-sizing:border-box }
+    /* RESET & SETUP */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
     html, body {
-      min-height: 8000px;         /* aumenta pra cobrir todas as whispers */
-      background: #000;           /* preto total */
-      font-family: monospace;     /* estilo terminal */
+      min-height: 9000px;           /* altura suficiente para scroll */
+      background: #000;             /* fundo preto total */
+      font-family: monospace;
       overflow-x: hidden;
-      cursor: default;            /* cursor sempre visível */
+      cursor: default;              /* cursor sempre visível */
     }
 
-    /* 2) FUNDO SÓLIDO + GIF REPETIDO */
+    /* FUNDO + GIF */
     .background {
-      position: fixed; inset:0;
-      background:
+      position: fixed; inset: 0;
+      background: 
         #000 url('we-can-see-you.gif') center top repeat-y;
       background-size: auto;
-      opacity: 0.02;              /* quase apagado, só aparece dentro da luz */
+      opacity: 0.02;                /* quase invisível fora da luz */
       pointer-events: none;
       z-index: 0;
     }
 
-    /* 3) MÁSCARA “FLASHLIGHT” */
+    /* MÁSCARA “FLASHLIGHT” */
     .mask {
-      position: fixed; inset:0;
+      position: fixed; inset: 0;
       pointer-events: none;
-      z-index: 10;
-      /* tudo preto opaco, exceto círculo transparente ao redor do cursor */
+      z-index: 50;                  /* acima de tudo, menos do fade */
       background:
         radial-gradient(
-          circle 150px at var(--x,50%) var(--y,50%),
-          transparent 0%,
-          rgba(0,0,0,0.97) 120px
+          circle at var(--x,50%) var(--y,50%),
+          transparent 150px,
+          rgba(0,0,0,0.97) 150px
         );
     }
 
-    /* 4) TEXTOS MISTERIOSOS */
+    /* TEXTOS MISTERIOSOS */
     .whisper {
       position: absolute;
       max-width: 300px;
       font-size: 14px;
       color: #6a0dad;
       opacity: 0.05;
-      transition: opacity 0.3s;
-      z-index: 5;
+      transition: opacity .3s;
+      z-index: 10;
       pointer-events: none;
     }
 
-    /* 5) PORTAL NO RODAPÉ */
+    /* PORTAL SCROLLÁVEL */
     #portal {
-      position: fixed !important;
-      bottom: 150px !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
+      position: absolute;           /* NÃO fixed! */
+      bottom: 150px;                /* 150px acima do fim do body */
+      left: 50%;
+      transform: translateX(-50%);
       width: 180px;
-      z-index: 20;
       cursor: pointer;
+      z-index: 10;                  /* abaixo da máscara */
       animation: pulse 2s infinite ease-in-out;
     }
     @keyframes pulse {
@@ -67,46 +68,44 @@
       50%     { transform: translateX(-50%) scale(1.05); }
     }
 
-    /* 6) OVERLAY DE FADE-OUT */
+    /* FADE-OUT ANTES DO REDIRECT */
     #fadeout {
-      position: fixed; inset:0;
+      position: fixed; inset: 0;
       background: #000;
       opacity: 0;
       pointer-events: none;
-      z-index: 9999;
+      z-index: 100;
       transition: opacity 1s ease;
     }
 
-    /* 7) ÁUDIO (escondido) */
-    audio { display: none }
+    /* ÁUDIO (escondido) */
+    audio { display: none; }
   </style>
 </head>
-
 <body>
-  <!-- fundo + GIF -->
+  <!-- 1) Fundo animado bem sutil -->
   <div class="background"></div>
 
-  <!-- máscara de luz -->
+  <!-- 2) Máscara que escurece tudo, exceto um disco transparente -->
   <div class="mask"></div>
 
-  <!-- frases espalhadas (ajuste os top/left como quiser) -->
+  <!-- 3) Frases espalhadas ao longo do scroll -->
   <div class="whisper" style="top:  800px; left: 20%;">você vai sair, e vai voltar</div>
   <div class="whisper" style="top: 1500px; left: 60%;">ele está observando, consumindo tudo.</div>
   <div class="whisper" style="top: 2200px; left: 35%;">essa fome... ela não some</div>
   <div class="whisper" style="top: 3100px; left: 70%;">não importa mais...</div>
   <div class="whisper" style="top: 3800px; left: 15%;">você vai voltar.</div>
   <div class="whisper" style="top: 4700px; left: 50%;">eles estão esperando por você.</div>
-  <!-- (adicione mais aqui se precisar) -->
 
-  <!-- portal -->
+  <!-- 4) Portal só aparece quando você rolar até o fim e iluminar -->
   <img id="portal" src="00portal.gif" alt="O Portal" />
 
-  <!-- áudio ambiente -->
+  <!-- 5) Áudio ambiente -->
   <audio id="ambience" loop>
     <source src="whispers-and-wind.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- fade-out antes do redirect -->
+  <!-- 6) Overlay de fade antes do redirect -->
   <div id="fadeout"></div>
 
   <script>
@@ -117,35 +116,35 @@
       const fade   = document.getElementById("fadeout");
       const texts  = document.querySelectorAll(".whisper");
 
-      // toca o som bem baixinho
+      // inicia o som bem baixo
       audio.volume = 0.01;
       audio.play().catch(()=>{});
 
-      // à medida que o usuário faz scroll, o volume sobe
+      // scroll aumenta o volume
       window.addEventListener("scroll", () => {
         const max = document.body.scrollHeight - window.innerHeight;
         audio.volume = Math.min(1, window.scrollY / max * 1.2);
       });
 
-      // atualiza a posição do “flashlight” e revela os textos próximos
+      // flashlight & revelar textos
       document.addEventListener("mousemove", e => {
         root.style.setProperty('--x', `${e.clientX}px`);
         root.style.setProperty('--y', `${e.clientY}px`);
 
         texts.forEach(el => {
           const r = el.getBoundingClientRect();
-          const d = Math.hypot(
+          const dist = Math.hypot(
             e.clientX - (r.left + r.width/2),
             e.clientY - (r.top  + r.height/2)
           );
-          el.style.opacity = d < 150 ? 0.6 : 0.05;
+          el.style.opacity = dist < 150 ? 0.6 : 0.05;
         });
       });
 
-      // clique no portal: fade e redirect
+      // clique no portal: fade e redireciona
       portal.addEventListener("click", () => {
         fade.style.pointerEvents = "auto";
-        fade.style.opacity       = 1;
+        fade.style.opacity = 1;
         setTimeout(() => {
           window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
         }, 1000);
