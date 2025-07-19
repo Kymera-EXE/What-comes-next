@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sem Retorno – Flashlight</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html {
+      background: #000;
+      overflow-x: hidden;
+      cursor: default;
+      color: #6a0dad;
+      font-family: monospace;
+    }
+
+    .background {
+      position: fixed; inset: 0;
+      background: #000 url('we-can-see-you.gif') center top repeat-y;
+      opacity: 0.02;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .whisper {
+      position: absolute;
+      max-width: 300px;
+      font-size: 14px;
+      opacity: 0.05;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #portal {
+      display: block;
+      margin: 200px auto 100px;
+      width: 180px;
+      opacity: 0.05;
+      cursor: pointer;
+      animation: pulse 2s infinite ease-in-out;
+      transition: opacity 0.3s;
+      z-index: 1;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.05); }
+    }
+
+    :root { --x:50%; --y:50%; }
+    .mask {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.98);
+      pointer-events: none;
+      z-index: 10;
+      clip-path: circle(150px at var(--x) var(--y));
+    }
+
+    #fadeout {
+      position: fixed; inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 1s ease;
+    }
+
+    audio { display: none; }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
+  <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
+  <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
+  <div class="whisper" style="top:3100px; left:70%;">não importa mais...</div>
+  <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
+  <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
+
+  <img id="portal" src="00portal.gif" alt="Portal">
+
+  <audio id="ambience" loop>
+    <source src="whispers-and-wind.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="mask"></div>
+  <div id="fadeout"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const root = document.documentElement;
+      const whispers = document.querySelectorAll('.whisper');
+      const portal = document.getElementById('portal');
+      const audio = document.getElementById('ambience');
+      const fade = document.getElementById('fadeout');
+
+      audio.volume = 0.01;
+      audio.play().catch(() => {});
+
+      window.addEventListener('scroll', () => {
+        const max = document.body.scrollHeight - window.innerHeight;
+        audio.volume = Math.min(1, window.scrollY / max * 1.2);
+      });
+
+      document.addEventListener('mousemove', e => {
+        root.style.setProperty('--x', e.clientX + 'px');
+        root.style.setProperty('--y', e.clientY + 'px');
+
+        whispers.forEach(w => {
+          const r = w.getBoundingClientRect();
+          const d = Math.hypot(
+            e.clientX - (r.left + r.width/2),
+            e.clientY - (r.top + r.height/2)
+          );
+          w.style.opacity = d < 150 ? 0.6 : 0.05;
+        });
+
+        const pr = portal.getBoundingClientRect();
+        const dp = Math.hypot(
+          e.clientX - (pr.left + pr.width/2),
+          e.clientY - (pr.top + pr.height/2)
+        );
+        portal.style.opacity = dp < 150 ? 1 : 0.05;
+      });
+
+      portal.addEventListener('click', () => {
+        fade.style.pointerEvents = 'auto';
+        fade.style.opacity = 1;
+        setTimeout(() => {
+          window.location.href = 'https://kymera-exe.github.io/Watchers-void/171717.html';
+        }, 1000);
+      });
+    });
+  </script>
+</body>
+</html>
