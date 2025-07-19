@@ -2,54 +2,74 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Portal</title>
+  <title>Portal – Terminal 00 Style</title>
   <style>
-    html, body {
+    /* ———————————————————————————————————————————
+         1) RESET & SETUP
+       ——————————————————————————————————————————— */
+    * {
       margin: 0;
       padding: 0;
-      height: 6000px;
-      font-family: monospace;
-      background-color: #000;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 6000px;           /* altura longa para scroll */
+      background: #000;         /* fundo totalmente preto */
+      font-family: monospace;   /* fonte “Terminal” */
       overflow-x: hidden;
-      cursor: default;
-
-      --x: 50%;
-      --y: 50%;
+      cursor: default;          /* cursor sempre visível */
     }
 
-    /* Fundo que se repete verticalmente */
+    /* ———————————————————————————————————————————
+         2) FUNDO ANIMADO
+       ——————————————————————————————————————————— */
     .background {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('we-can-see-you.gif');
-      background-repeat: repeat-y;
-      background-position: center top;
+      inset: 0;                 /* top/left/right/bottom = 0 */
+      background: url('we-can-see-you.gif') center top repeat-y;
       background-size: auto;
       opacity: 0.05;
-      z-index: 0;
       pointer-events: none;
+      z-index: 0;
     }
 
-    /* Máscara de luz que segue o cursor */
+    /* ———————————————————————————————————————————
+         3) MÁSCARA DE “LUZ”
+         — agora clareia o conteúdo em vez de escurecer
+       ——————————————————————————————————————————— */
     .mask {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       pointer-events: none;
       z-index: 10;
-      background: radial-gradient(circle 120px at var(--x) var(--y), rgba(0,0,0,0) 0%, rgba(0,0,0,0.97) 200px);
-      mix-blend-mode: multiply;
+      background: radial-gradient(
+        circle 120px at var(--x, 50%) var(--y, 50%),
+        rgba(255,255,255,0.15) 0%,
+        rgba(0,0,0,0.95) 200px
+      );
+      mix-blend-mode: screen;   /* “screen” faz a luz prevalecer */
     }
 
-    /* Portal no fim da página */
-    #portal {
+    /* ———————————————————————————————————————————
+         4) TEXTOS “WHISPER”
+       ——————————————————————————————————————————— */
+    .whisper {
       position: absolute;
-      bottom: 150px;
+      max-width: 300px;
+      font-size: 14px;
+      color: #6a0dad;
+      opacity: 0.05;
+      transition: opacity 0.3s;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* ———————————————————————————————————————————
+         5) PORTAL FIXO NO RODAPÉ
+       ——————————————————————————————————————————— */
+    #portal {
+      position: fixed;
+      bottom: 150px;           /* sempre 150px acima da base da janela */
       left: 50%;
       transform: translateX(-50%);
       width: 180px;
@@ -59,112 +79,99 @@
     }
 
     @keyframes pulse {
-      0% { transform: translateX(-50%) scale(1); }
-      50% { transform: translateX(-50%) scale(1.05); }
-      100% { transform: translateX(-50%) scale(1); }
+      0%,100% { transform: translateX(-50%) scale(1); }
+      50%     { transform: translateX(-50%) scale(1.05); }
     }
 
-    /* Frases misteriosas */
-    .whisper {
-      position: absolute;
-      max-width: 300px;
-      font-size: 14px;
-      color: #6a0dad;
-      opacity: 0.05;
-      z-index: 5;
-      transition: opacity 0.3s;
-    }
-
-    /* Transição escura ao sair */
+    /* ———————————————————————————————————————————
+         6) OVERLAY DE FADE-OUT
+       ——————————————————————————————————————————— */
     #fadeout {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
+      inset: 0;
+      background: #000;
       opacity: 0;
       pointer-events: none;
       z-index: 9999;
       transition: opacity 1s ease;
     }
 
-    audio {
-      display: none;
-    }
+    /* ———————————————————————————————————————————
+         7) ÁUDIO (escondido)
+       ——————————————————————————————————————————— */
+    audio { display: none; }
   </style>
 </head>
 <body>
 
-  <!-- Fundo animado escuro -->
+  <!-- 1. Fundo animado sutil -->
   <div class="background"></div>
 
-  <!-- Camada de máscara escura com luz -->
+  <!-- 2. Máscara de “luz” -->
   <div class="mask"></div>
 
-  <!-- Frases escondidas -->
-  <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
-  <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
-  <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
-  <div class="whisper" style="top:3100px; left:70%;">não importa mais...</div>
-  <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
-  <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
+  <!-- 3. Frases misteriosas -->
+  <div class="whisper" style="top:  800px; left: 20%;">você vai sair, e vai voltar</div>
+  <div class="whisper" style="top: 1500px; left: 60%;">ele está observando, consumindo tudo.</div>
+  <div class="whisper" style="top: 2200px; left: 35%;">essa fome... ela não some</div>
+  <div class="whisper" style="top: 3100px; left: 70%;">não importa mais...</div>
+  <div class="whisper" style="top: 3800px; left: 15%;">você vai voltar.</div>
+  <div class="whisper" style="top: 4700px; left: 50%;">eles estão esperando por você.</div>
 
-  <!-- Imagem do portal -->
+  <!-- 4. Portal sempre visível no rodapé -->
   <img id="portal" src="00portal.gif" alt="O Portal" />
 
-  <!-- Áudio ambiente -->
+  <!-- 5. Som ambiente -->
   <audio id="ambience" loop>
     <source src="whispers-and-wind.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Tela preta para transição -->
+  <!-- 6. Tela de fade-out -->
   <div id="fadeout"></div>
 
-  <!-- JavaScript -->
   <script>
+    // referências
+    const root   = document.documentElement;
     const portal = document.getElementById("portal");
-    const audio = document.getElementById("ambience");
-    const fadeout = document.getElementById("fadeout");
-    const whispers = document.querySelectorAll(".whisper");
+    const audio  = document.getElementById("ambience");
+    const fade   = document.getElementById("fadeout");
+    const texts  = document.querySelectorAll(".whisper");
 
-    // Inicia som ambiente com volume baixo
+    // 1) Iniciar audio muito baixo e tocar
     audio.volume = 0.01;
-    audio.play().catch(() => {});
+    audio.play().catch(() => {/* autoplay bloqueado? ignora */});
 
-    // Aumenta o volume conforme o scroll
+    // 2) Aumentar volume conforme scroll
     window.addEventListener("scroll", () => {
-      const maxScroll = document.body.scrollHeight - window.innerHeight;
-      const scroll = window.scrollY;
-      const factor = scroll / maxScroll;
-      audio.volume = Math.min(1, factor * 1.2);
+      const max = document.body.scrollHeight - window.innerHeight;
+      const f   = window.scrollY / max;
+      audio.volume = Math.min(1, f * 1.2);
     });
 
-    // Atualiza posição da luz e revela frases
-    document.addEventListener("mousemove", (e) => {
-      const x = e.clientX;
-      const y = e.clientY;
+    // 3) Atualizar posição da luz e revelar textos próximos
+    document.addEventListener("mousemove", e => {
+      // definir variáveis CSS --x, --y
+      root.style.setProperty('--x', `${e.clientX}px`);
+      root.style.setProperty('--y', `${e.clientY}px`);
 
-      document.documentElement.style.setProperty('--x', `${x}px`);
-      document.documentElement.style.setProperty('--y', `${y}px`);
-
-      whispers.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const dx = x - (rect.left + rect.width / 2);
-        const dy = y - (rect.top + rect.height / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        el.style.opacity = dist < 150 ? 0.6 : 0.05;
+      // revelar apenas se estiverem a <150px do cursor
+      texts.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width/2);
+        const dy = e.clientY - (r.top  + r.height/2);
+        el.style.opacity = (Math.hypot(dx, dy) < 150) ? 0.6 : 0.05;
       });
     });
 
-    // Transição escura e redirecionamento
+    // 4) Clicar no portal: fade e redireciona
     portal.addEventListener("click", () => {
-      fadeout.style.pointerEvents = "auto";
-      fadeout.style.opacity = 1;
+      fade.style.pointerEvents = "auto";
+      fade.style.opacity       = 1;
       setTimeout(() => {
-        window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
+        location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
       }, 1000);
     });
   </script>
+
 </body>
 </html>
