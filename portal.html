@@ -120,36 +120,30 @@
   <audio id="ambiente" src="whispers-and-wind.mp3" autoplay loop></audio>
 
   <script>
-    const audio = document.getElementById("ambiente");
+  document.addEventListener("DOMContentLoaded", function () {
+    const audio = document.getElementById("musica");
     audio.volume = 0.01;
+    audio.loop = true;
+    audio.play();
 
-   window.addEventListener("scroll", () => {
-  const portal = document.getElementById("00portal.gif");
-  const rect = portal.getBoundingClientRect();
-  const windowHeight = window.innerHeight;
+    window.addEventListener("scroll", () => {
+      const portal = document.getElementById("00portal.gif");
+      if (!portal) return;
 
-  // Distância do centro da viewport até o topo do portal
-  const distance = Math.max(0, rect.top - windowHeight / 2);
+      const rect = portal.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
 
-  // Quanto mais perto de 0, mais próximo está do portal
-  const volume = Math.max(0.01, 1 - distance / windowHeight);
-  audio.volume = Math.min(1, volume * 0.8); // limita a um volume razoável
-});
+      // Calcular distância entre o centro da tela e o topo do portal
+      const distance = Math.abs(rect.top - windowHeight / 2);
 
-    const lanterna = document.getElementById("lanterna");
-    document.addEventListener("mousemove", (e) => {
-      lanterna.style.background = `radial-gradient(circle 280px at ${e.clientX}px ${e.clientY}px, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)`; // raio e opacidade ajustados
+      // Quanto mais perto de zero, mais próximo do portal
+      const maxDistance = windowHeight; // distância máxima considerada
+      const volume = Math.max(0.01, 1 - distance / maxDistance);
 
-      document.querySelectorAll(".box").forEach(box => {
-        const rect = box.getBoundingClientRect();
-        const inside =
-          e.clientX > rect.left - 100 && e.clientX < rect.right + 100 &&
-          e.clientY > rect.top - 100 && e.clientY < rect.bottom + 100;
-
-        box.style.opacity = inside ? "1" : "0";
-      });
+      audio.volume = Math.min(1, volume * 0.8); // limite de 80%
     });
-  </script>
+  });
+</script>
 
 </body>
 </html>
