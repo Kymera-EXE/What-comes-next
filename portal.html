@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Portal</title>
+<style>
+body {
+  margin: 0;
+  background: #000 url('we-can-see-you.gif') repeat-y center top;
+  background-size: cover;
+  font-family: monospace;
+  color: #fff;
+  height: 6000px; /* Scroll longo */
+  overflow-x: hidden;
+  cursor: none;
+  position: relative;
+}
+
+#spotlight {
+  position: fixed;
+  pointer-events: none;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.95) 80%);
+  mix-blend-mode: screen;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+#portal {
+  position: absolute;
+  bottom: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: auto;
+  cursor: pointer;
+  animation: pulse 2s infinite ease-in-out;
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.05); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+.whisper {
+  position: absolute;
+  max-width: 300px;
+  color: #33ffff;
+  opacity: 0.05;
+  font-size: 14px;
+  transition: opacity 0.4s;
+}
+
+audio {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div id="spotlight"></div>
+<img id="portal" src="00portal.gif" alt="O Portal" />
+
+<audio id="ambience" loop>
+  <source src="whispers-and-wind.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Fragmentos de mensagem (visíveis só com luz) -->
+<div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
+<div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
+<div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
+<div class="whisper" style="top:3100px; left:70%;">não importa mais...</div>
+<div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
+<div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
+
+<script>
+const spotlight = document.getElementById("spotlight");
+const portal = document.getElementById("portal");
+const audio = document.getElementById("ambience");
+const whispers = document.querySelectorAll(".whisper");
+
+// Atualiza posição da luz do cursor
+document.addEventListener("mousemove", e => {
+  spotlight.style.left = `${e.clientX}px`;
+  spotlight.style.top = `${e.clientY}px`;
+});
+
+// Começa a tocar o áudio ambiente com volume baixo
+audio.volume = 0.01;
+audio.play().catch(() => {});
+
+// Volume cresce com a rolagem
+window.addEventListener("scroll", () => {
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const scroll = window.scrollY;
+  const proximity = scroll / maxScroll;
+  audio.volume = Math.min(1, proximity * 1.4);
+});
+
+// Clique no portal leva para o 171717.html V2
+  portal.addEventListener("click", () => {
+  window.location.href = "https://kymera-exe.github.io/Watchers-void/171717.html";
+});
+  
+// Revela sussurros quando dentro do spotlight
+document.addEventListener("mousemove", e => {
+  whispers.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 150) {
+      el.style.opacity = 0.6;
+    } else {
+      el.style.opacity = 0.05;
+    }
+  });
+});
+</script>
+</body>
+</html>
