@@ -8,8 +8,8 @@
     html, body {
       margin: 0;
       padding: 0;
-      overflow-x: hidden;
       height: 100%;
+      overflow-x: hidden;
       background: black;
       font-family: monospace;
     }
@@ -18,28 +18,39 @@
       background-image: url('we-can-see-you.gif');
       background-repeat: repeat;
       background-size: auto;
-      filter: brightness(5%);
+    }
+
+    /* Camada escurecida para criar o efeito de lanterna */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
+      z-index: 5;
+      pointer-events: none;
+      mix-blend-mode: multiply;
     }
 
     #lanterna {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
-      background: radial-gradient(circle 120px at center, transparent 0%, black 100%);
-      mix-blend-mode: multiply;
+      background: radial-gradient(circle 200px at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.95) 100%);
       z-index: 10;
     }
 
     .container {
       position: relative;
-      z-index: 5;
+      z-index: 2;
       max-width: 800px;
       margin: 0 auto;
       padding-top: 200px;
-      padding-bottom: 5000px; /* Página longa */
+      padding-bottom: 200px;
     }
 
     .box {
@@ -54,9 +65,12 @@
       transition: opacity 0.4s ease;
     }
 
-    .portal-container {
+    footer {
+      position: relative;
+      z-index: 2;
       text-align: center;
-      margin-top: 300px;
+      margin-top: 500px;
+      padding-bottom: 200px;
     }
 
     .portal-link {
@@ -79,6 +93,7 @@
 </head>
 <body>
 
+  <div class="overlay"></div>
   <div id="lanterna"></div>
 
   <div class="container">
@@ -91,15 +106,15 @@
     <div class="box">A lua sangra sonhos eternos</div>
     <div class="box">As sombras se alegram com sua queda</div>
     <div class="box">O silêncio grita em seu ouvido</div>
-
-    <!-- Portal -->
-    <div class="portal-container">
-      <a class="portal-link" href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
-        Olhos, Significam destino.
-      </a>
-      <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
-    </div>
   </div>
+
+  <!-- Portal separado no final da página -->
+  <footer>
+    <a class="portal-link" href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
+      Olhos, Significam destino.
+    </a>
+    <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
+  </footer>
 
   <audio id="ambiente" src="whispers-and-wind.mp3" autoplay loop></audio>
 
@@ -107,17 +122,15 @@
     const audio = document.getElementById("ambiente");
     audio.volume = 0.01;
 
-    // Áudio que aumenta com o scroll
     window.addEventListener("scroll", () => {
       const maxScroll = document.body.scrollHeight - window.innerHeight;
       const scrollPercent = window.scrollY / maxScroll;
       audio.volume = Math.min(0.9, scrollPercent * 1.5);
     });
 
-    // Lanterna e revelação de frases
     const lanterna = document.getElementById("lanterna");
     document.addEventListener("mousemove", (e) => {
-      lanterna.style.background = `radial-gradient(circle 150px at ${e.clientX}px ${e.clientY}px, transparent 0%, black 100%)`;
+      lanterna.style.background = `radial-gradient(circle 200px at ${e.clientX}px ${e.clientY}px, rgba(0,0,0,0) 0%, rgba(0,0,0,0.95) 100%)`;
 
       document.querySelectorAll(".box").forEach(box => {
         const rect = box.getBoundingClientRect();
