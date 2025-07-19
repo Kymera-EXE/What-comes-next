@@ -1,136 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Sem Retorno – Flashlight</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Abismo do Portal</title>
   <style>
+    /* RESET */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html {
-      background: #000;
+
+    /* FUNDO EM MOSAICO */
+    body {
+      min-height: 100vh;
+      background-image: url('we-can-see-you.gif');
+      background-repeat: repeat;
+      background-position: center;
+      font-family: sans-serif;
+      color: #eee;
       overflow-x: hidden;
-      cursor: default;
-      color: #6a0dad;
-      font-family: monospace;
+      position: relative;
     }
 
-    .background {
-      position: fixed; inset: 0;
-      background: #000 url('we-can-see-you.gif') center top repeat-y;
-      opacity: 0.02;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .whisper {
-      position: absolute;
-      max-width: 300px;
-      font-size: 14px;
-      opacity: 0.05;
-      transition: opacity 0.3s;
-      pointer-events: none;
+    /* CONTEÚDO */
+    .content {
+      position: relative;
       z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      line-height: 1.6;
     }
 
-    #portal {
-      display: block;
-      margin: 200px auto 100px;
-      width: 180px;
-      opacity: 0.05;
+    .spacer { height: 120vh; }
+
+    /* OVERLAY + LANTERNA */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.95);
+      mask-image: radial-gradient(
+        circle 120px at var(--mx,50%) var(--my,50%),
+        transparent 0%, black 70%
+      );
+      -webkit-mask-image: radial-gradient(
+        circle 120px at var(--mx,50%) var(--my,50%),
+        transparent 0%, black 70%
+      );
+    }
+
+    /* PORTAL */
+    .portal-container {
+      text-align: center;
+      margin: 4rem 0;
+    }
+    #portal-img {
+      width: 200px;
       cursor: pointer;
-      animation: pulse 2s infinite ease-in-out;
-      transition: opacity 0.3s;
-      z-index: 1;
+      transition: transform 0.3s;
     }
-    @keyframes pulse {
-      0%,100% { transform: scale(1); }
-      50%     { transform: scale(1.05); }
-    }
-
-    :root { --x:50%; --y:50%; }
-    .mask {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.98);
-      pointer-events: none;
-      z-index: 10;
-      clip-path: circle(150px at var(--x) var(--y));
-    }
-
-    #fadeout {
-      position: fixed; inset: 0;
-      background: #000;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 100;
-      transition: opacity 1s ease;
-    }
-
-    audio { display: none; }
+    #portal-img:hover { transform: scale(1.1); }
   </style>
 </head>
 <body>
-  <div class="background"></div>
+  <!-- Áudio de sussurros -->
+  <audio id="bg-audio" src="whispers-and-wind.mp3" loop preload="auto"></audio>
 
-  <div class="whisper" style="top:800px; left:20%;">você vai sair, e vai voltar</div>
-  <div class="whisper" style="top:1500px; left:60%;">ele está observando, consumindo tudo.</div>
-  <div class="whisper" style="top:2200px; left:35%;">essa fome... ela não some</div>
-  <div class="whisper" style="top:3100px; left:70%;">não importa mais...</div>
-  <div class="whisper" style="top:3800px; left:15%;">você vai voltar.</div>
-  <div class="whisper" style="top:4700px; left:50%;">eles estão esperando por você.</div>
+  <!-- Overlay da lanterna -->
+  <div class="overlay"></div>
 
-  <img id="portal" src="00portal.gif" alt="Portal">
+  <!-- Conteúdo rolável -->
+  <div class="content">
+    <h1>Você sente o frio correndo pela espinha</h1>
+    <p>“Algo observa… algo espera…”</p>
+    <p>“Cada suspiro ecoa na escuridão eterna.”</p>
+    <p>“Não há retorno além deste ponto.”</p>
+    <!-- MAIS frases macabras aqui -->
 
-  <audio id="ambience" loop>
-    <source src="whispers-and-wind.mp3" type="audio/mpeg">
-  </audio>
+    <div class="spacer"></div>
 
-  <div class="mask"></div>
-  <div id="fadeout"></div>
+    <!-- Portal no final -->
+    <footer class="portal-container">
+      <a href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank" rel="noopener">
+        <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
+      </a>
+    </footer>
+  </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const root = document.documentElement;
-      const whispers = document.querySelectorAll('.whisper');
-      const portal = document.getElementById('portal');
-      const audio = document.getElementById('ambience');
-      const fade = document.getElementById('fadeout');
-
-      audio.volume = 0.01;
-      audio.play().catch(() => {});
-
-      window.addEventListener('scroll', () => {
-        const max = document.body.scrollHeight - window.innerHeight;
-        audio.volume = Math.min(1, window.scrollY / max * 1.2);
-      });
-
-      document.addEventListener('mousemove', e => {
-        root.style.setProperty('--x', e.clientX + 'px');
-        root.style.setProperty('--y', e.clientY + 'px');
-
-        whispers.forEach(w => {
-          const r = w.getBoundingClientRect();
-          const d = Math.hypot(
-            e.clientX - (r.left + r.width/2),
-            e.clientY - (r.top + r.height/2)
-          );
-          w.style.opacity = d < 150 ? 0.6 : 0.05;
-        });
-
-        const pr = portal.getBoundingClientRect();
-        const dp = Math.hypot(
-          e.clientX - (pr.left + pr.width/2),
-          e.clientY - (pr.top + pr.height/2)
-        );
-        portal.style.opacity = dp < 150 ? 1 : 0.05;
-      });
-
-      portal.addEventListener('click', () => {
-        fade.style.pointerEvents = 'auto';
-        fade.style.opacity = 1;
-        setTimeout(() => {
-          window.location.href = 'https://kymera-exe.github.io/Watchers-void/171717.html';
-        }, 1000);
-      });
+    // LANTERNA
+    const overlay = document.querySelector('.overlay');
+    function updateLanterna(x, y) {
+      overlay.style.setProperty('--mx', x + 'px');
+      overlay.style.setProperty('--my', y + 'px');
+    }
+    document.addEventListener('mousemove', e => updateLanterna(e.clientX, e.clientY));
+    document.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      updateLanterna(t.clientX, t.clientY);
     });
+
+    // ÁUDIO DINÂMICO
+    const audio = document.getElementById('bg-audio');
+    const portalImg = document.getElementById('portal-img');
+    audio.volume = 0;
+    audio.play().catch(()=>{});
+
+    function calcDistToPortal() {
+      const rect = portalImg.getBoundingClientRect();
+      return Math.max(rect.top - window.innerHeight, 0);
+    }
+
+    function updateVolume() {
+      const maxDist = window.innerHeight * 2;
+      const dist = calcDistToPortal();
+      let vol = 1 - (dist / maxDist);
+      vol = Math.min(Math.max(vol, 0), 1);
+      audio.volume = vol;
+    }
+
+    window.addEventListener('scroll', updateVolume);
+    window.addEventListener('resize', updateVolume);
+    updateVolume();
   </script>
 </body>
 </html>
