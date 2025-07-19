@@ -10,16 +10,15 @@
       padding: 0;
       overflow-x: hidden;
       height: 100%;
-      font-family: monospace;
       background: black;
+      font-family: monospace;
     }
 
     body {
       background-image: url('we-can-see-you.gif');
       background-repeat: repeat;
       background-size: auto;
-      color: white;
-      filter: brightness(6%);
+      filter: brightness(5%);
     }
 
     #lanterna {
@@ -29,7 +28,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      background: radial-gradient(circle 100px at center, transparent 0%, black 100%);
+      background: radial-gradient(circle 120px at center, transparent 0%, black 100%);
       mix-blend-mode: multiply;
       z-index: 10;
     }
@@ -37,25 +36,22 @@
     .container {
       position: relative;
       z-index: 5;
-      width: 100%;
       max-width: 800px;
       margin: 0 auto;
       padding-top: 200px;
-      padding-bottom: 5000px; /* Faz a página longa */
+      padding-bottom: 5000px; /* Página longa */
     }
 
     .box {
       background: #000;
       color: white;
       padding: 1.5rem 2rem;
-      border: 1px solid #111;
       font-size: 1rem;
       text-align: center;
-      margin: 250px auto;
+      margin: 300px auto;
       max-width: 80%;
       opacity: 0;
-      transition: opacity 0.3s ease;
-      position: relative;
+      transition: opacity 0.4s ease;
     }
 
     .portal-container {
@@ -86,7 +82,7 @@
   <div id="lanterna"></div>
 
   <div class="container">
-    <!-- Frases espalhadas -->
+    <!-- Frases ocultas -->
     <div class="box">Eles cochicham seu nome na escuridão</div>
     <div class="box">Seus olhos nunca piscam, apenas o fitam</div>
     <div class="box">A noite inteira é apenas seu funeral</div>
@@ -105,39 +101,31 @@
     </div>
   </div>
 
-  <!-- Áudio dinâmico -->
-  <audio id="ambiente" src="whispers-and-wind.mp3" loop autoplay></audio>
+  <audio id="ambiente" src="whispers-and-wind.mp3" autoplay loop></audio>
 
   <script>
-    // Áudio que aumenta com scroll
     const audio = document.getElementById("ambiente");
     audio.volume = 0.01;
 
+    // Áudio que aumenta com o scroll
     window.addEventListener("scroll", () => {
       const maxScroll = document.body.scrollHeight - window.innerHeight;
       const scrollPercent = window.scrollY / maxScroll;
-      audio.volume = Math.min(0.9, scrollPercent * 1.2);
+      audio.volume = Math.min(0.9, scrollPercent * 1.5);
     });
 
-    // Lanterna e revelação
+    // Lanterna e revelação de frases
     const lanterna = document.getElementById("lanterna");
     document.addEventListener("mousemove", (e) => {
       lanterna.style.background = `radial-gradient(circle 150px at ${e.clientX}px ${e.clientY}px, transparent 0%, black 100%)`;
 
-      // Revelar caixas dentro da área da lanterna
       document.querySelectorAll(".box").forEach(box => {
         const rect = box.getBoundingClientRect();
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+        const inside =
+          e.clientX > rect.left - 100 && e.clientX < rect.right + 100 &&
+          e.clientY > rect.top - 100 && e.clientY < rect.bottom + 100;
 
-        const withinX = mouseX > rect.left - 50 && mouseX < rect.right + 50;
-        const withinY = mouseY > rect.top - 50 && mouseY < rect.bottom + 50;
-
-        if (withinX && withinY) {
-          box.style.opacity = "1";
-        } else {
-          box.style.opacity = "0";
-        }
+        box.style.opacity = inside ? "1" : "0";
       });
     });
   </script>
