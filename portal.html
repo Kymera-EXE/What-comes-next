@@ -123,11 +123,18 @@
     const audio = document.getElementById("ambiente");
     audio.volume = 0.01;
 
-    window.addEventListener("scroll", () => {
-      const maxScroll = document.body.scrollHeight - window.innerHeight;
-      const scrollPercent = window.scrollY / maxScroll;
-      audio.volume = Math.min(0.9, scrollPercent * 1.5);
-    });
+   window.addEventListener("scroll", () => {
+  const portal = document.getElementById("00portal.gif");
+  const rect = portal.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+
+  // Distância do centro da viewport até o topo do portal
+  const distance = Math.max(0, rect.top - windowHeight / 2);
+
+  // Quanto mais perto de 0, mais próximo está do portal
+  const volume = Math.max(0.01, 1 - distance / windowHeight);
+  audio.volume = Math.min(1, volume * 0.8); // limita a um volume razoável
+});
 
     const lanterna = document.getElementById("lanterna");
     document.addEventListener("mousemove", (e) => {
