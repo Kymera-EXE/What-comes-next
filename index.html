@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Index.html</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 40px;
+    }
+
+    .mensagem {
+      display: none;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      border-left: 4px solid;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .amarelo {
+      color: #ffff66;
+      border-color: #ffff66;
+    }
+
+    .azul-escuro {
+      color: #003366;
+      border-color: #003366;
+    }
+
+    a {
+      color: #003366;
+      text-decoration: underline;
+    }
+
+    .typing {
+      color: #555;
+      font-style: italic;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .dot {
+      animation: blink 1s infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      0%, 20% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="typing" id="typing">
+    <span>Digitando</span>
+    <span class="dot">.</span>
+    <span class="dot">.</span>
+    <span class="dot">.</span>
+  </div>
+
+  <div class="mensagem amarelo" id="msg1">
+    <p>"Apenas aceitar? como podemos aceitar esse tipo de sofrimento? nós não deveríamos estar aqui, NINGUÉM deveria estar aqui. Mas eu temo o que vem a seguir..."</p>
+  </div>
+
+  <div class="mensagem azul-escuro" id="msg2">
+    <p>"Você deveria parar de pensar demais. Pega isso aqui: 
+      <a href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
+        https://kymera-exe.github.io/Watchers-void/171717.html
+      </a>"
+    </p>
+  </div>
+
+  <div class="mensagem amarelo" id="msg3">
+    <p>"12 vezes. Ele disse que deve ser 12 vezes..."</p>
+  </div>
+
+  <script>
+    const messages = [
+      { id: "msg1", delay: 2000 },
+      { id: "msg2", delay: 4000 },
+      { id: "msg3", delay: 6000 }
+    ];
+
+    let current = 0;
+
+    function showNextMessage() {
+      if (current >= messages.length) {
+        document.getElementById("typing").style.display = "none";
+        return;
+      }
+
+      const { id, delay } = messages[current];
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        el.style.display = "block";
+        setTimeout(() => {
+          el.style.opacity = 1;
+        }, 50);
+        current++;
+        showNextMessage();
+      }, delay);
+    }
+
+    showNextMessage();
+  </script>
+
+</body>
+</html>
