@@ -1,162 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Abismo do Portal</title>
+  <meta charset="UTF-8">
+  <title>Vigilância do Abismo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* RESET */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    /* FUNDO EM MOSAICO ESCURO */
     body {
+      background-color: #000;
+      background-image: url('we-can-see-you.gif');
+      background-repeat: repeat;
+      background-size: auto;
+      filter: brightness(10%);
+      font-family: monospace, sans-serif;
+      color: white;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
-      font-family: sans-serif;
-    }
-    body::before {
-      content: '';
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: url('we-can-see-you.gif') repeat center center;
-      background-size: auto;
-      filter: brightness(10%);
-      z-index: 0;
     }
 
-    /* OVERLAY + LANTERNA */
-    .overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      pointer-events: none;
-      z-index: 2;
-      background: rgba(0, 0, 0, 1);
-      mask-image: radial-gradient(
-        circle 120px at var(--mx,50%) var(--my,50%),
-        transparent 0%, black 70%
-      );
-      -webkit-mask-image: radial-gradient(
-        circle 120px at var(--mx,50%) var(--my,50%),
-        transparent 0%, black 70%
-      );
-    }
-
-    /* ÁUDIO escondido */
-    audio { display: none; }
-
-    /* GLITCH SUTIL */
-    @keyframes glitch {
-      0%,100% { text-shadow: 1px 0 #660066, -1px 0 #cc00cc; }
-      50%    { text-shadow:-1px 0 #660066,  1px 0 #cc00cc; }
-    }
-
-    /* FRASES MACABRAS */
-    .phrase {
-      position: absolute;
-      color: #550055;
-      opacity: 0;
-      font-size: 0.9rem;
-      transition: opacity 0.6s ease;
-      pointer-events: auto;
-      white-space: nowrap;
-    }
-    .phrase:hover {
-      opacity: 1;
-      animation: glitch 1.5s infinite;
-    }
-
-    /* POSICIONAMENTO MAIS CENTRAL */
-    #p1 { top: 10vh;  left: 40%; }
-    #p2 { top: 90vh;  left: 55%; }
-    #p3 { top: 170vh; left: 45%; }
-    #p4 { top: 250vh; left: 60%; }
-    #p5 { top: 330vh; left: 50%; }
-    #p6 { top: 410vh; left: 55%; }
-    #p7 { top: 490vh; left: 45%; }
-    #p8 { top: 570vh; left: 60%; }
-
-    /* ÁREA PARA SCROLL */
-    .content {
+    .container {
       position: relative;
       z-index: 1;
-      height: 660vh; /* ainda mais longo */
+      padding: 5vh 2rem;
+      height: 700vh; /* Muito espaço para scroll */
     }
 
-    /* PORTAL NO FINAL */
+    .box {
+      background: #000;
+      padding: 2rem;
+      margin: 10vh auto;
+      max-width: 80%;
+      color: white;
+      border: 1px solid #111;
+      font-size: 1.2rem;
+    }
+
     .portal-container {
       position: absolute;
-      top: 640vh;
+      bottom: 5vh;
       width: 100%;
       text-align: center;
-      z-index: 1;
+      z-index: 2;
     }
+
+    .portal-link {
+      display: inline-block;
+      background: #000;
+      color: white;
+      padding: 1rem 2rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid #333;
+    }
+
     #portal-img {
       width: 180px;
-      cursor: pointer;
-      transition: transform 0.3s;
+      display: block;
+      margin: 1rem auto 0;
     }
-    #portal-img:hover { transform: scale(1.1); }
   </style>
 </head>
 <body>
-  <!-- Áudio de sussurros -->
-  <audio id="bg-audio" src="whispers-and-wind.mp3" loop preload="auto"></audio>
 
-  <!-- Overlay da lanterna -->
-  <div class="overlay"></div>
-
-  <!-- Área para scroll e frases -->
-  <div class="content">
-    <p id="p1" class="phrase">Eles cochicham seu nome na escuridão</p>
-    <p id="p2" class="phrase">Seus olhos nunca piscam apenas o fitam</p>
-    <p id="p3" class="phrase">A noite inteira é apenas seu funeral</p>
-    <p id="p4" class="phrase">Não há eco para quem já não existe</p>
-    <p id="p5" class="phrase">O vazio devora o que resta de você</p>
-    <p id="p6" class="phrase">A lua sangra sonhos eternos</p>
-    <p id="p7" class="phrase">As sombras se alegram com sua queda</p>
-    <p id="p8" class="phrase">O silêncio grita em seu ouvido</p>
-
-    <!-- Portal no final -->
-    <footer class="portal-container">
-      <a href="https://kymera-exe.github.io/Watchers-void/171717.html"
-         target="_blank" rel="noopener">
-        <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
-      </a>
-    </footer>
+  <div class="container">
+    <!-- Frases escondidas em caixas pretas -->
+    <div class="box">Eles cochicham seu nome na escuridão</div>
+    <div class="box">Seus olhos nunca piscam, apenas o fitam</div>
+    <div class="box">A noite inteira é apenas seu funeral</div>
+    <div class="box">Não há eco para quem já não existe</div>
+    <div class="box">O vazio devora o que resta de você</div>
+    <div class="box">A lua sangra sonhos eternos</div>
+    <div class="box">As sombras se alegram com sua queda</div>
+    <div class="box">O silêncio grita em seu ouvido</div>
   </div>
 
-  <script>
-    // LANTERNA
-    const overlay = document.querySelector('.overlay');
-    function updateLanterna(x,y) {
-      overlay.style.setProperty('--mx', x+'px');
-      overlay.style.setProperty('--my', y+'px');
-    }
-    document.addEventListener('mousemove', e => updateLanterna(e.clientX,e.clientY));
-    document.addEventListener('touchmove', e => {
-      const t = e.touches[0];
-      updateLanterna(t.clientX,t.clientY);
-    });
+  <!-- Portal no final -->
+  <div class="portal-container">
+    <a class="portal-link" href="https://kymera-exe.github.io/Watchers-void/171717.html" target="_blank">
+      Olhos, Significam destino.
+    </a>
+    <img id="portal-img" src="00portal.gif" alt="Portal para o Void" />
+  </div>
 
-    // ÁUDIO DINÂMICO
-    const audio = document.getElementById('bg-audio');
-    const portalImg = document.getElementById('portal-img');
-    audio.volume = 0;
-    audio.play().catch(()=>{});
-
-    function distToPortal() {
-      const r = portalImg.getBoundingClientRect();
-      return Math.max(r.top - window.innerHeight, 0);
-    }
-    function updateVolume() {
-      const max = window.innerHeight * 2;
-      let v = 1 - (distToPortal()/max);
-      audio.volume = Math.min(Math.max(v,0),1);
-    }
-    window.addEventListener('scroll', updateVolume);
-    window.addEventListener('resize', updateVolume);
-    updateVolume();
-  </script>
 </body>
 </html>
